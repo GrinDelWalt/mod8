@@ -819,13 +819,10 @@ namespace mod8
 
                 if (intIdEmployee[0] != 1_000_001)
                 {
-                    int i = 0;
-                    while (i != intIdEmployee.Count)
+                    
+                    for (int i = 0; i < intIdEmployee.Count; i++)
                     {
-                        i++;
-                    }
-                    foreach (var element in employee)
-                    {
+                        string el = employee[i].Element("SURNAME").Value;
 
                         int index = idDep;
                         //Количество рабочих в базе
@@ -841,15 +838,15 @@ namespace mod8
 
                         string[] arrayEmployee = new string[5];
 
-                        arrayEmployee[0] = element.Element("SURNAME").Value;
+                        arrayEmployee[0] = employee[intIdEmployee[i]].Element("SURNAME").Value;
 
-                        arrayEmployee[1] = element.Element("NAME").Value;
+                        arrayEmployee[1] = employee[intIdEmployee[i]].Element("NAME").Value;
 
-                        arrayEmployee[2] = element.Element("AGE").Value;
+                        arrayEmployee[2] = employee[intIdEmployee[i]].Element("AGE").Value;
 
-                        arrayEmployee[3] = element.Element("PROJECTS").Value;
+                        arrayEmployee[3] = employee[intIdEmployee[i]].Element("PROJECTS").Value;
 
-                        arrayEmployee[4] = element.Element("SALARY").Value;
+                        arrayEmployee[4] = employee[intIdEmployee[i]].Element("SALARY").Value;
 
                         AddWorker(new Worker(arrayEmployee[1], arrayEmployee[0], Convert.ToUInt32(arrayEmployee[2]), Convert.ToUInt32(arrayEmployee[4]), Convert.ToUInt32(arrayEmployee[3]), this.index, Convert.ToUInt32(index)));
 
@@ -864,6 +861,7 @@ namespace mod8
                         }
                         int countId = this.dep[index - 1].Id.Count;
                         idList.Add(this.index + 1);
+                        
                     }
                 }
             }
