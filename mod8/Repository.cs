@@ -696,6 +696,12 @@ namespace mod8
 
             } while (char.ToLower(key) == 'д');
         }
+        /// <summary>
+        /// поиск сотрудника по ID
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="d"></param>
+        /// <returns></returns>
         public int IdSearch(int i,int d)
         {
             int id;
@@ -872,7 +878,6 @@ namespace mod8
         public void JSONRead()
         {
             JObject company = new JObject();
-            
 
             JArray departments = new JArray();
             JArray workers = new JArray();
@@ -885,7 +890,6 @@ namespace mod8
                 JObject department = new JObject();
                 department["NameDep"] = dep[i].NameDep;
                 department["Data"] = dep[i].Data;
-                
                 
                 if (maxId != 1_000_001)
                 {
@@ -917,11 +921,10 @@ namespace mod8
                         };
                         workers.Add(worker);
                     }
-                    department["workers"] = workers;
-                    
                 }
-                
                 departments.Add(department);
+                department["workers"] = workers;
+                
             }
             company["company"] = departments;
 
