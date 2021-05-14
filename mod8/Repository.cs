@@ -449,9 +449,6 @@ namespace mod8
 
             int index = Convert.ToInt32(Console.ReadLine());
 
-
-
-
             switch (index)
             {
                 case 1:
@@ -667,13 +664,10 @@ namespace mod8
         public void RecordDep()
         {
             char key = 'д';
-
-
             do
             {
                 int tempNumberDep = 0;
                 bool result;
-
                 do
                 {
                     tempNumberDep++;
@@ -685,7 +679,6 @@ namespace mod8
                             result = false;
                         }
                     }
-
                 } while (result == false);
 
                 string[] data = new string[2];
@@ -705,7 +698,6 @@ namespace mod8
         }
         public int IdSearch(int i,int d)
         {
-            //не работает !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             int id;
             id = Convert.ToInt32(dep[i].Id[d]);
             int idSearch = 0;
@@ -781,14 +773,16 @@ namespace mod8
                 myCOMPANY.Add(myDEPARTMENT);
             }
 
-            myCOMPANY.Save("C:/Users/Гоша/Desktop/С#/Worker.xml");
+            //myCOMPANY.Save("C:/Users/Гоша/Desktop/С#/Worker.xml");
+            myCOMPANY.Save("C:/Users/user/Desktop/Модуль 8/Worker.xml");
         }
         /// <summary>
         /// десериализация XML
         /// </summary>
         public void XMLRead()
         {
-            string xml = File.ReadAllText("C:/Users/Гоша/Desktop/С#/Worker.xml");
+            //string xml = File.ReadAllText("C:/Users/Гоша/Desktop/С#/Worker.xml");
+            string xml = File.ReadAllText("C:/Users/user/Desktop/Модуль 8/Worker.xml");
 
             var dep = XDocument.Parse(xml)
                                .Descendants("COMPANY")
@@ -935,7 +929,8 @@ namespace mod8
 
             string json = company.ToString();
 
-            File.WriteAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
+            //File.WriteAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
+            File.WriteAllText("C:/Users/user/Desktop/Модуль 8/WorkerJson.json", json);
         }
     }
 }
