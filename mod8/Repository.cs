@@ -779,16 +779,16 @@ namespace mod8
                 myCOMPANY.Add(myDEPARTMENT);
             }
 
-            //myCOMPANY.Save("C:/Users/Гоша/Desktop/С#/Worker.xml");
-            myCOMPANY.Save("C:/Users/user/Desktop/Модуль 8/Worker.xml");
+            myCOMPANY.Save("C:/Users/Гоша/Desktop/С#/Worker.xml");
+            //myCOMPANY.Save("C:/Users/user/Desktop/Модуль 8/Worker.xml");
         }
         /// <summary>
         /// десериализация XML
         /// </summary>
         public void XMLRead()
         {
-            //string xml = File.ReadAllText("C:/Users/Гоша/Desktop/С#/Worker.xml");
-            string xml = File.ReadAllText("C:/Users/user/Desktop/Модуль 8/Worker.xml");
+            string xml = File.ReadAllText("C:/Users/Гоша/Desktop/С#/Worker.xml");
+            //string xml = File.ReadAllText("C:/Users/user/Desktop/Модуль 8/Worker.xml");
 
             var dep = XDocument.Parse(xml)
                                .Descendants("COMPANY")
@@ -799,7 +799,7 @@ namespace mod8
                                  .Descendants("DEPARTMENT")
                                  .Descendants("EMPLOYEE")
                                  .ToList();
-            
+            int id = 0;
             foreach (var e in dep)
             {
                 int tempNumberDep = this.dep.Count;
@@ -812,17 +812,17 @@ namespace mod8
                 string[] arrayStringIdEmployee = stringIdEmployee.Split(separators, StringSplitOptions.RemoveEmptyEntries);
                 //нужно пероразовать масив строк в INT и доделть десерелизацию рабочих с их айди 
                 List<int> intIdEmployee = new List<int>();
-                for (int i = 0; i < arrayStringIdEmployee.Length; i++)
+                for (int d = 0; d < arrayStringIdEmployee.Length; d++)
                 {
-                    intIdEmployee.Add(Convert.ToInt32(arrayStringIdEmployee[i]));                           //запись колекции чисел
+                    intIdEmployee.Add(Convert.ToInt32(arrayStringIdEmployee[d]));                           //запись колекции чисел
                 }
                 List<uint> initializerList = new List<uint>();
                 initializerList.Add(1_000_001);
                 AddDep(new Department(data[0], DateTime.Parse(data[1]), Convert.ToUInt32(tempNumberDep + 1), initializerList));
                 int idDep = tempNumberDep + 1;
 
-
-
+                
+                
                 if (intIdEmployee[0] != 1_000_001)
                 {
                     
@@ -844,15 +844,15 @@ namespace mod8
 
                         string[] arrayEmployee = new string[5];
 
-                        arrayEmployee[0] = employee[intIdEmployee[i]].Element("SURNAME").Value;
+                        arrayEmployee[0] = employee[i + id].Element("SURNAME").Value;
 
-                        arrayEmployee[1] = employee[intIdEmployee[i]].Element("NAME").Value;
+                        arrayEmployee[1] = employee[i + id].Element("NAME").Value;
 
-                        arrayEmployee[2] = employee[intIdEmployee[i]].Element("AGE").Value;
+                        arrayEmployee[2] = employee[i + id].Element("AGE").Value;
 
-                        arrayEmployee[3] = employee[intIdEmployee[i]].Element("PROJECTS").Value;
+                        arrayEmployee[3] = employee[i + id].Element("PROJECTS").Value;
 
-                        arrayEmployee[4] = employee[intIdEmployee[i]].Element("SALARY").Value;
+                        arrayEmployee[4] = employee[i + id].Element("SALARY").Value;
 
                         AddWorker(new Worker(arrayEmployee[1], arrayEmployee[0], Convert.ToUInt32(arrayEmployee[2]), Convert.ToUInt32(arrayEmployee[4]), Convert.ToUInt32(arrayEmployee[3]), this.index, Convert.ToUInt32(index)));
 
@@ -870,6 +870,7 @@ namespace mod8
                         
                     }
                 }
+                id += intIdEmployee.Count;
             }
         }
         /// <summary>
@@ -922,16 +923,19 @@ namespace mod8
                         workers.Add(worker);
                     }
                 }
+                string json = company.ToString();
                 departments.Add(department);
                 department["workers"] = workers;
-                
+                File.AppendAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
+                workers.RemoveAll();
+                departments.RemoveAll();
             }
-            company["company"] = departments;
+           //company["company"] = departments;
 
-            string json = company.ToString();
+            
 
             //File.WriteAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
-            File.WriteAllText("C:/Users/user/Desktop/Модуль 8/WorkerJson.json", json);
+            //File.WriteAllText("C:/Users/user/Desktop/Модуль 8/WorkerJson.json", json);
         }
     }
 }
