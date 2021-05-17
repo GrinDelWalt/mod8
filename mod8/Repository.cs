@@ -904,7 +904,8 @@ namespace mod8
                 }
                 
                 department["id_Dep"] = dep[i].NumberDep;
-                
+                departments.Add(department);
+                workers.Clear();
                 if (maxId != 1_000_001)
                 {
                     for (int d = 0; d < dep[i].Id.Count; d++)
@@ -921,20 +922,19 @@ namespace mod8
                             ["IdEmployee"] = this.workers[idSearch].Id,
                         };
                         workers.Add(worker);
+                        department["workers"] = workers;
+                        
                     }
                 }
-                string json = company.ToString();
-                departments.Add(department);
-                department["workers"] = workers;
-                File.AppendAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
-                workers.RemoveAll();
-                departments.RemoveAll();
+               
+                
+                //workers.Clear();
             }
-           //company["company"] = departments;
+            company["company"] = departments;
 
-            
+            string json = company.ToString();
 
-            //File.WriteAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
+            File.WriteAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
             //File.WriteAllText("C:/Users/user/Desktop/Модуль 8/WorkerJson.json", json);
         }
     }
