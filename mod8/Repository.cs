@@ -148,10 +148,13 @@ namespace mod8
                         XMLRec();
                         break;
                     case 6:
-                        JSONRead();
+                        JSONRec();
                         break;
                     case 7:
                         XMLRead();
+                        break;
+                    case 8:
+                        JSONRead();
                         break;
                     case 9:
                         PrintDepartment();
@@ -876,7 +879,7 @@ namespace mod8
         /// <summary>
         /// серилизация JSON
         /// </summary>
-        public void JSONRead()
+        public void JSONRec()
         {
             JObject company = new JObject();
 
@@ -936,6 +939,94 @@ namespace mod8
 
             File.WriteAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json", json);
             //File.WriteAllText("C:/Users/user/Desktop/Модуль 8/WorkerJson.json", json);
+        }
+        /// <summary>
+        /// десериализация json
+        /// </summary>
+        public void JSONRead()
+        {
+            string json = File.ReadAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json");
+            //Console.WriteLine(json);
+
+            var dep = JObject.Parse(json)["company"].ToArray();
+            var employee = JObject.Parse(json)["company"]["workers"].ToArray();
+
+
+
+            int id = 0;
+            foreach (var e in dep)
+            {
+                int tempNumberDep = this.dep.Count;
+                string[] data = new string[2];
+
+                data[0] = e["NameDep"].ToString();
+                data[1] = e["Data"].ToString();
+                string stringIdEmployee = e["id_Workers"].ToString();
+                string[] separators = { ",", ".", "!", "?", ";", ":", " " };                                //конвертация строки в масив чисел
+                string[] arrayStringIdEmployee = stringIdEmployee.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                //нужно пероразовать масив строк в INT и доделть десерелизацию рабочих с их айди 
+                List<int> intIdEmployee = new List<int>();
+                for (int d = 0; d < arrayStringIdEmployee.Length; d++)
+                {
+                    intIdEmployee.Add(Convert.ToInt32(arrayStringIdEmployee[d]));                           //запись колекции чисел
+                }
+                List<uint> initializerList = new List<uint>();
+                initializerList.Add(1_000_001);
+                AddDep(new Department(data[0], DateTime.Parse(data[1]), Convert.ToUInt32(tempNumberDep + 1), initializerList));
+                int idDep = tempNumberDep + 1;
+
+
+
+                if (intIdEmployee[0] != 1_000_001)
+                {
+
+                    for (int i = 0; i < intIdEmployee.Count; i++)
+                    {
+                       
+
+                        int index = idDep;
+                        //Количество рабочих в базе
+                        object idWorker = this.workers.Count;
+                        if (idWorker == null)
+                        {
+                            this.index = 0;
+                        }
+                        else
+                        {
+                            this.index = Convert.ToUInt32(idWorker);
+                        }
+
+                        string[] arrayEmployee = new string[5];
+
+                        arrayEmployee[0] = employee[i + id]["Surname"].ToString();
+
+                        arrayEmployee[1] = employee[i + id]["Name"].ToString();
+
+                        arrayEmployee[2] = employee[i + id]["Age"].ToString();
+
+                        arrayEmployee[3] = employee[i + id]["Projeck"].ToString();
+
+                        arrayEmployee[4] = employee[i + id]["Salari"].ToString();
+
+                        AddWorker(new Worker(arrayEmployee[1], arrayEmployee[0], Convert.ToUInt32(arrayEmployee[2]), Convert.ToUInt32(arrayEmployee[4]), Convert.ToUInt32(arrayEmployee[3]), this.index, Convert.ToUInt32(index)));
+
+                        List<uint> idList = new List<uint>();
+                        if (this.dep[index - 1].Id[0] == 1_000_001)
+                        {
+                            this.dep[index - 1].Id[0] = this.index;
+                        }
+                        else
+                        {
+                            this.dep[index - 1].AddId(this.index);
+                        }
+                        int countId = this.dep[index - 1].Id.Count;
+                        idList.Add(this.index + 1);
+
+                    }
+                }
+                id += intIdEmployee.Count;
+            }
+
         }
     }
 }
