@@ -91,6 +91,9 @@ namespace mod8
                     case 1:
                         XMLRead();
                         break;
+                    case 2:
+                        JSONRead();
+                        break;
                     default:
                         break;
                 }
@@ -949,9 +952,9 @@ namespace mod8
             //Console.WriteLine(json);
 
             var dep = JObject.Parse(json)["company"].ToArray();
-            var employee = JObject.Parse(json)["company"]["workers"].ToArray();
-
-
+           
+            
+           
 
             int id = 0;
             foreach (var e in dep)
@@ -975,15 +978,17 @@ namespace mod8
                 AddDep(new Department(data[0], DateTime.Parse(data[1]), Convert.ToUInt32(tempNumberDep + 1), initializerList));
                 int idDep = tempNumberDep + 1;
 
+                string worker = Convert.ToString(dep[id]);
+                var employee = JObject.Parse(worker)["workers"].ToArray();
+
+                
+
 
 
                 if (intIdEmployee[0] != 1_000_001)
                 {
-
-                    for (int i = 0; i < intIdEmployee.Count; i++)
+                    foreach (var item in employee)
                     {
-                       
-
                         int index = idDep;
                         //Количество рабочих в базе
                         object idWorker = this.workers.Count;
@@ -998,15 +1003,15 @@ namespace mod8
 
                         string[] arrayEmployee = new string[5];
 
-                        arrayEmployee[0] = employee[i + id]["Surname"].ToString();
+                        arrayEmployee[0] = item["Surname"].ToString();
 
-                        arrayEmployee[1] = employee[i + id]["Name"].ToString();
+                        arrayEmployee[1] = item["Name"].ToString();
 
-                        arrayEmployee[2] = employee[i + id]["Age"].ToString();
+                        arrayEmployee[2] = item["Age"].ToString();
 
-                        arrayEmployee[3] = employee[i + id]["Projeck"].ToString();
+                        arrayEmployee[3] = item["Projeck"].ToString();
 
-                        arrayEmployee[4] = employee[i + id]["Salari"].ToString();
+                        arrayEmployee[4] = item["Salari"].ToString();
 
                         AddWorker(new Worker(arrayEmployee[1], arrayEmployee[0], Convert.ToUInt32(arrayEmployee[2]), Convert.ToUInt32(arrayEmployee[4]), Convert.ToUInt32(arrayEmployee[3]), this.index, Convert.ToUInt32(index)));
 
@@ -1024,8 +1029,15 @@ namespace mod8
 
                     }
                 }
-                id += intIdEmployee.Count;
+                id++;
             }
+
+        }
+        /// <summary>
+        /// Сортировка сотрудников
+        /// </summary>
+        public void SortWorker()
+        {
 
         }
     }
