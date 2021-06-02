@@ -22,7 +22,9 @@ namespace mod8
         public List<Worker> workers;
 
 
-        public string Path { get; set; }
+        public string PathXML { get; set; }
+
+        public string PathJSON { get; set; }
 
         uint index;
 
@@ -77,7 +79,7 @@ namespace mod8
         /// </summary>
         public void Menu()
         {
-            //есть не обработоное исключение (при вводе пустого поле вылетает эксепшен)
+            
             char key = 'д';
             Print("считать данные с XML или JSON? д/н");
             key = Console.ReadKey(true).KeyChar;
@@ -85,10 +87,11 @@ namespace mod8
             {
                 Print("Десерелизовать XML - 1");
                 Print("Десерелизовать JSON - 2");
-                int index = Convert.ToInt32(Console.ReadLine());
+                int index = Convert.ToInt32(ExceptionsInt());
                 switch (index)
                 {
                     case 1:
+
                         XMLRead();
                         break;
                     case 2:
@@ -117,6 +120,7 @@ namespace mod8
                 Print("Редактировать департамент - 10");
                 Print("Расформировать департамент - 11");
                 Print("Перевезти сотрудника - 12");
+                Print("Сортировка сотруднирков - 13");
                 Print("");
                 Print("Работа с XML и JSON");
                 Print("");
@@ -126,7 +130,7 @@ namespace mod8
                 Print("Десерелизовать JSON - 8");
                 Print("Печать - 9");
 
-                int index = Convert.ToInt32(Console.ReadLine());
+                int index = Convert.ToInt32(ExceptionsInt());
                 switch (index)
                 {
                     case 1:
@@ -140,7 +144,7 @@ namespace mod8
                     case 3:
                         PrintEmployee();
                         Print("ID увольняемого сотрудника");
-                        DismissEmployee(Convert.ToInt32(Console.ReadLine()));
+                        DismissEmployee();
                         break;
                     case 4:
                         PrintEmployee();
@@ -173,9 +177,11 @@ namespace mod8
                     case 12:
                         TransferEmployee();
                         break;
+                    case 13:
+                        SortWorker();
+                        break;
                     default:
                         break;
-                        //подружить методы, обработать исключения 
                 }
 
                 Print("Открыть меню? д/н");
@@ -358,7 +364,7 @@ namespace mod8
                 Print("5 - Колличество проектов");
                 Print("Для редактирования всех полей нажмите: ENTER");
 
-                int index = Convert.ToInt32(Console.ReadLine());
+                int index = Convert.ToInt32(ExceptionsInt());
 
                 switch (index)
                 {
@@ -453,7 +459,7 @@ namespace mod8
             Print("2 - Дата создания");
             Print("Для редактирования всех полей нажмите: ENTER");
 
-            int index = Convert.ToInt32(Console.ReadLine());
+            int index = Convert.ToInt32(ExceptionsInt());
 
             switch (index)
             {
@@ -489,32 +495,44 @@ namespace mod8
         /// <summary>
         /// Удаление сотрудников
         /// </summary>
-        public void DismissEmployee(int index)
+        public void DismissEmployee()
         {
-            int indexEmployee = 0;
+            int index = Convert.ToInt32(ExceptionsInt());
+
+            int indexEmployee = -1;
             for (int i = 0; i < workers.Count; i++)
             {
                 if (index == Convert.ToInt32(workers[i].Id))
                 {
                     indexEmployee = i;
                 }
-                
-            }
-            
-            int idDep = Convert.ToInt32(workers[indexEmployee].IdDep);
-            uint idEmployee = workers[indexEmployee].Id;
 
-            
-            workers.RemoveAt(indexEmployee);
-            if (dep[idDep - 1].Id.Count == 1)
+            }
+
+            if (indexEmployee >= 0)
             {
-                dep[idDep - 1].Id.Add(1000001);
-                dep[idDep - 1].Id.Remove(idEmployee);
+
+
+                int idDep = Convert.ToInt32(workers[indexEmployee].IdDep);
+                uint idEmployee = workers[indexEmployee].Id;
+
+
+                workers.RemoveAt(indexEmployee);
+                if (dep[idDep - 1].Id.Count == 1)
+                {
+                    dep[idDep - 1].Id.Add(1000001);
+                    dep[idDep - 1].Id.Remove(idEmployee);
+                }
+                else
+                {
+                    dep[idDep - 1].Id.Remove(idEmployee);
+                }
             }
             else
             {
-                dep[idDep - 1].Id.Remove(idEmployee);
+                Print("Неверный ID");
             }
+
 
         }
         /// <summary>
@@ -583,7 +601,7 @@ namespace mod8
         public void DeleteDep()
         {
             Print("Номер расформировываемого департамента");
-            int number = Convert.ToInt32(Console.ReadLine());
+            int number = Convert.ToInt32(ExceptionsInt());
             if (dep.Count == 1)
             {
                 Print("В данной организации всего один департамент");
@@ -595,25 +613,40 @@ namespace mod8
             }
             else
             {
+                
+                int indexDep = -1;
+                for (int i = 0; i < dep.Count; i++)
+                {
+                    if (number == Convert.ToInt32(dep[i].NumberDep))
+                    {
+                        indexDep = i;
+                    }
 
-                List<uint> idEmployee = new List<uint>();
-                foreach (var item in dep[number - 1].Id)
-                {
-                    idEmployee.Add(item);
                 }
-                if (idEmployee[0] != 1000001)
+                if (indexDep >= 0)
                 {
-                    if (number == 1)
+                    List<uint> idEmployee = new List<uint>();
+                    foreach (var item in dep[indexDep].Id)
                     {
-                        DeleteDepAdditional(idEmployee, 2);
-                        // поиск сотрудника по id, доделать редактрования полсе удаления депа(прописать номер нового департамента каждому переведенному сотруднику)
+                        idEmployee.Add(item);
                     }
-                    else
+                    if (idEmployee[0] != 1000001)
                     {
-                        DeleteDepAdditional(idEmployee, 1);
+                        if (number == 1)
+                        {
+                            DeleteDepAdditional(idEmployee, 2);
+                        }
+                        else
+                        {
+                            DeleteDepAdditional(idEmployee, 1);
+                        }
                     }
+                    dep.RemoveAt(indexDep);
                 }
-                dep.RemoveAt(number - 1);
+                else
+                {
+                    Print("Неверный ID");
+                }
             }
         }
         /// <summary>
@@ -635,7 +668,7 @@ namespace mod8
             List<int> idPeople = new List<int>();
             for (int i = 0; i < idEmployee.Count; i++)
             {
-                int id = SearchEmployee(i);
+                int id = SearchEmployee(Convert.ToInt32(idEmployee[i]));
                 workers[id] = new Worker
                 {
                     Name = workers[id].Name,
@@ -816,7 +849,6 @@ namespace mod8
                 string stringIdEmployee = e.Element("Id").Value;
                 string[] separators = { ",", ".", "!", "?", ";", ":", " " };                                //конвертация строки в масив чисел
                 string[] arrayStringIdEmployee = stringIdEmployee.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                //нужно пероразовать масив строк в INT и доделть десерелизацию рабочих с их айди 
                 List<int> intIdEmployee = new List<int>();
                 for (int d = 0; d < arrayStringIdEmployee.Length; d++)
                 {
@@ -826,12 +858,9 @@ namespace mod8
                 initializerList.Add(1_000_001);
                 AddDep(new Department(data[0], DateTime.Parse(data[1]), Convert.ToUInt32(tempNumberDep + 1), initializerList));
                 int idDep = tempNumberDep + 1;
-
-                
                 
                 if (intIdEmployee[0] != 1_000_001)
                 {
-                    
                     for (int i = 0; i < intIdEmployee.Count; i++)
                     {
                         string el = employee[i].Element("SURNAME").Value;
@@ -873,7 +902,6 @@ namespace mod8
                         }
                         int countId = this.dep[index - 1].Id.Count;
                         idList.Add(this.index + 1);
-                        
                     }
                 }
                 id += intIdEmployee.Count;
@@ -929,12 +957,8 @@ namespace mod8
                         };
                         workers.Add(worker);
                         department["workers"] = workers;
-                        
                     }
                 }
-               
-                
-                //workers.Clear();
             }
             company["company"] = departments;
 
@@ -949,12 +973,8 @@ namespace mod8
         public void JSONRead()
         {
             string json = File.ReadAllText("C:/Users/Гоша/Desktop/С#/WorkerJson.json");
-            //Console.WriteLine(json);
 
             var dep = JObject.Parse(json)["company"].ToArray();
-           
-            
-           
 
             int id = 0;
             foreach (var e in dep)
@@ -967,7 +987,6 @@ namespace mod8
                 string stringIdEmployee = e["id_Workers"].ToString();
                 string[] separators = { ",", ".", "!", "?", ";", ":", " " };                                //конвертация строки в масив чисел
                 string[] arrayStringIdEmployee = stringIdEmployee.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                //нужно пероразовать масив строк в INT и доделть десерелизацию рабочих с их айди 
                 List<int> intIdEmployee = new List<int>();
                 for (int d = 0; d < arrayStringIdEmployee.Length; d++)
                 {
@@ -980,10 +999,6 @@ namespace mod8
 
                 string worker = Convert.ToString(dep[id]);
                 var employee = JObject.Parse(worker)["workers"].ToArray();
-
-                
-
-
 
                 if (intIdEmployee[0] != 1_000_001)
                 {
@@ -1026,19 +1041,60 @@ namespace mod8
                         }
                         int countId = this.dep[index - 1].Id.Count;
                         idList.Add(this.index + 1);
-
                     }
                 }
                 id++;
             }
-
         }
         /// <summary>
         /// Сортировка сотрудников
         /// </summary>
         public void SortWorker()
         {
+            Worker[] employee = new Worker[workers.Count];
+            var sortTable = new Worker[1];
+            for (int i = 0; i < workers.Count; i++)
+            {
+                employee[i] = workers[i];
+            }
+            Print("Выберете" +
+                "\n1 - сортировка по возрасту" +
+                "\n2 - сортировка по Зарплате" +
+                "\n3 - сортировка по колличеству проектов" +
+                "\n4 - сортировка по департаменту и зарплате" +
+                "\n5 - сортировка по департаменту и количеству проектов" +
+                "\n6 - сортировка по возрасту и зарплате в рамках одного департамента");
+            int index = Convert.ToInt32(ExceptionsInt());
 
+            switch (index)
+            {
+                case 1:
+                    sortTable = employee.OrderBy(x => x.Age).ToArray();
+                    break;
+                case 2:
+                    sortTable = employee.OrderBy(x => x.Salary).ToArray();
+                    break;
+                case 3:
+                    sortTable = employee.OrderBy(x => x.Projects).ToArray();
+                    break;
+                case 4:
+                    sortTable = employee.OrderBy(x => x.IdDep).ThenBy(x => x.Salary).ToArray();
+                    break;
+                case 5:
+                    sortTable = employee.OrderBy(x => x.IdDep).ThenBy(x => x.Projects).ToArray();
+                    break;
+                case 6:
+                    sortTable = employee.OrderBy(x => x.IdDep).ThenBy(x => x.Age).ThenBy(x => x.Salary).ToArray();
+                    break;
+                default:
+                    break;
+            }
+            Console.WriteLine(EmployeeTitle());
+            for (int i = 0; i < sortTable.Length; i++)
+            {
+                Console.WriteLine($"{sortTable[i].Surname,30} {sortTable[i].Name,30} {sortTable[i].Salary,5} {sortTable[i].Age,10} {sortTable[i].Projects,15} {sortTable[i].Id,12} {sortTable[i].IdDep,5}");
+                Console.WriteLine();
+            }
         }
     }
 }
