@@ -12,13 +12,12 @@ namespace mod8
         /// <param name="NameDep"></param>
         /// <param name="Data"></param>
         /// <param name="NumberDep"></param>
-        public Department(string NameDep, DateTime Data, uint NumberDep, List<uint> Id)
+        public Department(string NameDep, DateTime Data, uint NumberDep, List<int> Id)
         {
             this.NumberDep = NumberDep;
             this.NameDep = NameDep;
             this.Data = Data;
             this.Id = Id;
-            
         }
 
         /// <summary>
@@ -39,9 +38,9 @@ namespace mod8
         /// <summary>
         /// ID сотрудников относящихся к данному депортаменту
         /// </summary>
-        public List<uint> Id { get; set; }
+        public List<int> Id { get; set; }
 
-        public void AddId(uint id)
+        public void AddId(int id)
         {
             this.Id.Add(id);
         }
