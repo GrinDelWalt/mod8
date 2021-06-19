@@ -301,8 +301,6 @@ namespace mod8
         /// </summary>
         public void RecordEmployee()
         {
-            
-
             char key = 'д';
 
             if (rep.dep.Count == 0)
@@ -314,19 +312,11 @@ namespace mod8
             {
                 Console.WriteLine();
                 Print("Выберете номер депортамента");
-                int index = Convert.ToInt32(Console.ReadLine());
+                int indexDep = Convert.ToInt32(Console.ReadLine());
 
                 do
                 {
-                    object idWorker = rep.workers.Count;
-                    if (idWorker == null)
-                    {
-                        rep.index = 0;
-                    }
-                    else
-                    {
-                        rep.index = Convert.ToInt32(idWorker);
-                    }
+                    int index = rep.SearchEmployeeRreeId();
 
                     string[] data = new string[5];
                     Print("Имя");
@@ -340,20 +330,20 @@ namespace mod8
                     Print("Зарплата");
                     data[4] = ExceptionsInt();
 
-                    rep.AddWorker(new Worker(data[1], data[0], Convert.ToUInt32(data[2]), Convert.ToUInt32(data[4]), Convert.ToUInt32(data[3]), Convert.ToUInt32(rep.index), Convert.ToUInt32(index)));
+                    rep.AddWorker(new Worker(data[1], data[0], Convert.ToUInt32(data[2]), Convert.ToUInt32(data[4]), Convert.ToUInt32(data[3]), Convert.ToUInt32(index), Convert.ToUInt32(indexDep)));
 
-                    List<int> idList = new List<int>();
-                    if (rep.dep[index - 1].Id[0] == -1)
+                    //List<int> idList = new List<int>();
+                    if (rep.dep[indexDep - 1].Id[0] == -1)
                     {
-                        rep.dep[index - 1].Id[0] = rep.index;
+                        rep.dep[indexDep - 1].Id[0] = index;
                     }
                     else
                     {
-                        rep.dep[index - 1].AddId(rep.index);
+                        rep.dep[indexDep - 1].AddId(index);
                     }
-                    int countId = rep.dep[index - 1].Id.Count;
-                    idList.Add(rep.index + 1);
-
+                    //int countId = rep.dep[indexDep - 1].Id.Count;
+                    //idList.Add(rep.index + 1);
+                    rep.index++;
 
                     Print("Добавить еще сотрудника? д/н");
                     key = Console.ReadKey(true).KeyChar;
@@ -514,6 +504,7 @@ namespace mod8
                     {
                         rep.dep[idNewDep - 1].Id.Add(idEmployee);
                     }
+                   
                 }
             }
             while (logic == false);
@@ -555,6 +546,7 @@ namespace mod8
                 {
                     rep.dep[idDep - 1].Id.Remove(idEmployee);
                 }
+                rep.index--;
             }
             else
             {
@@ -571,11 +563,11 @@ namespace mod8
             char key = 'д';
             do
             {
+                Print("Введите путь к файлу");
                 string path = ExceptionsString();
                 bool result = File.Exists(path);
                 if (true == result)
                 {
-                    Print("Введите путь к файлу");
                     rep.XMLRead(path);
                 }
                 else
@@ -596,11 +588,11 @@ namespace mod8
             char key = 'д';
             do
             {
+                Print("Введите путь к файлу");
                 string path = ExceptionsString();
                 bool result = File.Exists(path);
                 if (true == result)
                 {
-                    Print("Введите путь к файлу");
                     rep.JSONRead(path);
                 }
                 else

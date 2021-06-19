@@ -10,16 +10,19 @@ namespace mod8
 {
     class Menu
     {
+        
         Repository rep = new Repository();
 
         Functionality func = new Functionality();
+
+       
         public void Print(string a)
         {
             Console.WriteLine(a);
         }
         public void MenuCompany()
         {
-            
+            rep.index = -1;
             char key = 'д';
             Print("считать данные с XML или JSON? д/н");
             key = Console.ReadKey(true).KeyChar;

@@ -154,11 +154,13 @@ namespace mod8
         /// </summary>
         public void XMLRead(string path)
         {
-            var dep = XDocument.Parse(path)
+            string xml = File.ReadAllText(path);
+
+            var dep = XDocument.Parse(xml)
                                .Descendants("COMPANY")
                                .Descendants("DEPARTMENT")
                                .ToList();
-            var employee = XDocument.Parse(path)
+            var employee = XDocument.Parse(xml)
                                  .Descendants("COMPANY")
                                  .Descendants("DEPARTMENT")
                                  .Descendants("EMPLOYEE")
@@ -297,7 +299,8 @@ namespace mod8
         /// </summary>
         public void JSONRead(string path)
         {
-            var dep = JObject.Parse(path)["company"].ToArray();
+            string json = File.ReadAllText(path);
+            var dep = JObject.Parse(json)["company"].ToArray();
 
             int id = 0;
 
@@ -369,6 +372,33 @@ namespace mod8
                 }
                 id++;
             }
+        }
+        public int SearchEmployeeRreeId()
+        {
+            bool result = false;
+            List<int> idWork = new List<int>();
+
+            for (int i = 0; i < workers.Count; i++)
+            {
+                idWork.Add(Convert.ToInt32(workers[i].Id));
+            }
+            for (int i = 0; i < index; i++)
+            {
+                for (int d = 0; d < idWork.Count; d++)
+                {
+                    if (i == idWork[d])
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+                if (result == false)
+                {
+                    return i;
+                }
+                result = false;
+            }
+            return index;
         }
         
     }

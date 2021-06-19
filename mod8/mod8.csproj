@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="Functionality.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="Personnel.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Worker.cs" />
